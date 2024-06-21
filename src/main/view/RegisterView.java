@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import main.Main;
+import main.controller.RegisterController;
 
 public class RegisterView {
     public VBox getView(Main main) {
@@ -21,7 +22,7 @@ public class RegisterView {
         vbox.setSpacing(10);
 
         Label titleLabel = new Label("Register");
-        titleLabel.setId("title-label");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
@@ -41,7 +42,12 @@ public class RegisterView {
         confirmPasswordField.setPromptText("Confirm your password");
 
         Button registerButton = new Button("Register");
-        registerButton.setId("register-button");
+        registerButton.setOnAction(e -> {
+        	RegisterController registerController = new RegisterController();
+        	if (registerController.insertUser(usernameField.getText(), passwordField.getText())) {
+        		main.showHomeView();
+        	}
+        });
         
         Text loginText = new Text("Already have an account? ");
         Hyperlink loginLink = new Hyperlink("Login");

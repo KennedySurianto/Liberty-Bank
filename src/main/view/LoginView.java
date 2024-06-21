@@ -39,11 +39,11 @@ public class LoginView {
 
 		Button loginButton = new Button("Login");
 		loginButton.setId("login-button");
-		loginButton.setStyle(
-				"-fx-background-color: #007bff; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
 		loginButton.setOnAction(e -> {
 			LoginController loginController = new LoginController();
-			loginController.login(usernameField.getText(), passwordField.getText());
+			if (loginController.validateLogin(usernameField.getText(), passwordField.getText())) {
+				main.showHomeView();
+			}
 		});
 		
 		Text registerText = new Text("Don't have an account? ");
