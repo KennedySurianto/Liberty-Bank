@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import main.view.HomeView;
 import main.view.LoginView;
 import main.view.RegisterView;
+import main.view.TransactionView;
 
 public class Main extends Application {
 	Stage stage;
@@ -41,6 +42,12 @@ public class Main extends Application {
 	public void showHomeView() {
 		HomeView homeView = new HomeView();
 		this.stage.setScene(new Scene(homeView.getView(this), 400, 300));
+		this.stage.show();
+	}
+	
+	public void showTransactionView() {
+		TransactionView transactionView = new TransactionView();
+		this.stage.setScene(new Scene(transactionView.getView(this), 400, 300));
 		this.stage.show();
 	}
 	

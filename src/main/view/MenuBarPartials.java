@@ -21,7 +21,7 @@ public class MenuBarPartials {
 		Menu transactionMenu = new Menu("Transaction");
 		MenuItem transactionItem = new MenuItem("Go to transaction page");
 		transactionItem.setOnAction(e -> {
-			
+			main.showTransactionView();
 		});
 		transactionMenu.getItems().add(transactionItem);
 		

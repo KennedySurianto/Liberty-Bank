@@ -14,10 +14,9 @@ import main.controller.UserManager;
 public class HomeView {
 	
 	public BorderPane getView(Main main) {
+		BorderPane view = new MenuBarPartials().getMenuBar(main);
         BorderPane borderPane = new BorderPane();
         HomeController homeController = new HomeController();
-        MenuBarPartials menuBarPartials = new MenuBarPartials();
-        BorderPane view = menuBarPartials.getMenuBar(main);
         
         // Title
         Label titleLabel = new Label("Welcome, " + UserManager.getInstance().getCurrentUser().getUsername());
