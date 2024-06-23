@@ -16,27 +16,27 @@ public class HomeController {
 	public HomeController() {
 		this.currentUser = UserManager.getInstance().getCurrentUser();
 	}
-	
+
 	private boolean isBalanceEnough(double transferAmount) {
 		return currentUser.getBalance() >= transferAmount;
 	}
-	
+
 	private int getId(String username) {
 		int id = -1;
-		
+
 		try {
 			Class.forName("org.postgresql.Driver");
 			Connection con = DatabaseConnection.getConnection();
-			
+
 			String query = "SELECT user_id FROM users WHERE username = ?;";
 			PreparedStatement stm = con.prepareStatement(query);
 			stm.setString(1, username);
-			
+
 			ResultSet rs = stm.executeQuery();
 			if (rs.next()) {
 				id = rs.getInt("user_id");
 			}
-			
+
 			stm.close();
 			con.close();
 		} catch (ClassNotFoundException e) {
@@ -44,59 +44,56 @@ public class HomeController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return id;
 	}
-	
-	public void transfer(String receiverUsername, double transferAmount, Label balanceAmountLabel, TextField recipientField, TextField amountField) {
+
+	public void transfer(String receiverUsername, double transferAmount, Label balanceAmountLabel,
+			TextField recipientField, TextField amountField) {
 		if (!isBalanceEnough(transferAmount)) {
 			return;
 		}
-		
+
 		int senderId = currentUser.getUserId();
 		int receiverId = getId(receiverUsername);
 		if (receiverId == -1) {
 			return;
 		}
-		
+
 		Connection con = null;
-		
+		PreparedStatement updateSenderStatement = null;
+		PreparedStatement updateReceiverStatement = null;
+		PreparedStatement insertTransactionStatement = null;
 		try {
 			Class.forName("org.postgresql.Driver");
 			con = DatabaseConnection.getConnection();
 			con.setAutoCommit(false);
-			
+
 			String updateSenderQuery = "UPDATE users SET balance = balance - ? WHERE user_id = ?;";
-			PreparedStatement updateSenderStatement = con.prepareStatement(updateSenderQuery);
+			updateSenderStatement = con.prepareStatement(updateSenderQuery);
 			updateSenderStatement.setDouble(1, transferAmount);
 			updateSenderStatement.setInt(2, senderId);
 			updateSenderStatement.executeUpdate();
-			
+
 			String updateReceiverQuery = "UPDATE users SET balance = balance + ? WHERE user_id = ?;";
-			PreparedStatement updateReceiverStatement = con.prepareStatement(updateReceiverQuery);
+			updateReceiverStatement = con.prepareStatement(updateReceiverQuery);
 			updateReceiverStatement.setDouble(1, transferAmount);
 			updateReceiverStatement.setInt(2, receiverId);
 			updateReceiverStatement.executeUpdate();
-			
+
 			String insertTransactionQuery = "INSERT INTO transactions (sender_id, receiver_id, amount) VALUES (?, ?, ?);";
-			PreparedStatement insertTransactionStatement = con.prepareStatement(insertTransactionQuery);
+			insertTransactionStatement = con.prepareStatement(insertTransactionQuery);
 			insertTransactionStatement.setInt(1, senderId);
 			insertTransactionStatement.setInt(2, receiverId);
 			insertTransactionStatement.setDouble(3, transferAmount);
 			insertTransactionStatement.executeUpdate();
-			
+
 			con.commit();
-			
+
 			currentUser.setBalance(currentUser.getBalance() - transferAmount);
 			balanceAmountLabel.setText(String.valueOf(currentUser.getBalance()));
 			recipientField.clear();
 			amountField.clear();
-			
-			updateSenderStatement.close();
-			updateReceiverStatement.close();
-			insertTransactionStatement.close();
-			
-			con.close();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -108,6 +105,35 @@ public class HomeController {
 				}
 			}
 			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (updateSenderStatement != null) {
+				try {
+					updateSenderStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (updateReceiverStatement != null) {
+				try {
+					updateReceiverStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (insertTransactionStatement != null) {
+				try {
+					insertTransactionStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 

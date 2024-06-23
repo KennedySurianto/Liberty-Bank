@@ -14,8 +14,10 @@ import main.controller.UserManager;
 public class HomeView {
 	
 	public BorderPane getView(Main main) {
-        BorderPane view = new BorderPane();
+        BorderPane borderPane = new BorderPane();
         HomeController homeController = new HomeController();
+        MenuBarPartials menuBarPartials = new MenuBarPartials();
+        BorderPane view = menuBarPartials.getMenuBar(main);
         
         // Title
         Label titleLabel = new Label("Welcome, " + UserManager.getInstance().getCurrentUser().getUsername());
@@ -55,12 +57,14 @@ public class HomeView {
         transferForm.add(amountField, 1, 2);
         transferForm.add(transferButton, 1, 3);
         
-        view.setTop(titleLabel);
-        view.setCenter(transferForm);
+        borderPane.setTop(titleLabel);
+        borderPane.setCenter(transferForm);
         
         // Setting margin for title
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
         BorderPane.setMargin(titleLabel, new Insets(10, 0, 10, 0));
+        
+        view.setCenter(borderPane);
         
         return view;
     }

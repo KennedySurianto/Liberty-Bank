@@ -17,7 +17,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		// TODO Auto-generated method stub
 		this.stage = stage;
 		this.stage.setTitle("Liberty Bank");
 		
