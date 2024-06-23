@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import main.model.DatabaseConnection;
 import main.model.User;
 
@@ -46,7 +48,7 @@ public class HomeController {
 		return id;
 	}
 	
-	public void transfer(String receiverUsername, double transferAmount) {
+	public void transfer(String receiverUsername, double transferAmount, Label balanceAmountLabel, TextField recipientField, TextField amountField) {
 		if (!isBalanceEnough(transferAmount)) {
 			return;
 		}
@@ -84,6 +86,11 @@ public class HomeController {
 			insertTransactionStatement.executeUpdate();
 			
 			con.commit();
+			
+			currentUser.setBalance(currentUser.getBalance() - transferAmount);
+			balanceAmountLabel.setText(String.valueOf(currentUser.getBalance()));
+			recipientField.clear();
+			amountField.clear();
 			
 			updateSenderStatement.close();
 			updateReceiverStatement.close();

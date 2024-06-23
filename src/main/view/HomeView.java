@@ -29,7 +29,7 @@ public class HomeView {
         transferForm.setPadding(new Insets(20, 20, 20, 20));
         
         Label balanceLabel = new Label("Your Balance:");
-        Label balanceAmountLabel = new Label(String.valueOf(UserManager.getInstance().getCurrentUser().getBalance()));
+        Label balanceAmountLabel = new Label(String.valueOf(homeController.getCurrentUser().getBalance()));
         
         Label recipientLabel = new Label("Recipient Username:");
         TextField recipientField = new TextField();
@@ -44,7 +44,7 @@ public class HomeView {
             String recipient = recipientField.getText();
             String amount = amountField.getText();
             
-            homeController.transfer(recipient, Double.parseDouble(amount));
+            homeController.transfer(recipient, Double.parseDouble(amount), balanceAmountLabel, recipientField, amountField);
         });
         
         transferForm.add(balanceLabel, 0, 0);
