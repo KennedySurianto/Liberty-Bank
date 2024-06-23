@@ -38,12 +38,9 @@ public class LoginView {
 		passwordField.setPromptText("Enter your password");
 
 		Button loginButton = new Button("Login");
-		loginButton.setId("login-button");
 		loginButton.setOnAction(e -> {
 			LoginController loginController = new LoginController();
-			if (loginController.validateLogin(usernameField.getText(), passwordField.getText())) {
-				main.showHomeView();
-			}
+			loginController.login(main, usernameField.getText(), passwordField.getText());
 		});
 		
 		Text registerText = new Text("Don't have an account? ");

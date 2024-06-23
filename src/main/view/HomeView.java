@@ -8,14 +8,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import main.Main;
+import main.controller.HomeController;
 
 public class HomeView {
 	
 	public BorderPane getView(Main main) {
         BorderPane view = new BorderPane();
-
+        HomeController homeController = new HomeController();
+        homeController.initialize();
+        
         // Title
-        Label titleLabel = new Label("Welcome to Liberty Bank");
+        Label titleLabel = homeController.getWelcomeLabel();
         titleLabel.setStyle("-fx-font-size: 24px; -fx-padding: 10px;");
         
         // Transfer form
@@ -25,9 +28,9 @@ public class HomeView {
         transferForm.setVgap(10);
         transferForm.setPadding(new Insets(20, 20, 20, 20));
         
-        Label recipientLabel = new Label("Recipient Account:");
+        Label recipientLabel = new Label("Recipient Username:");
         TextField recipientField = new TextField();
-        recipientField.setPromptText("Enter recipient account number");
+        recipientField.setPromptText("Enter recipient username");
         
         Label amountLabel = new Label("Amount:");
         TextField amountField = new TextField();

@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 
+import main.Main;
 import main.model.DatabaseConnection;
+import main.model.User;
 
 public class LoginController {
 	
@@ -23,37 +25,43 @@ public class LoginController {
             throw new RuntimeException("Error initializing SHA-256 algorithm", e);
         }
     }
-    
-    private String getStoredHashedPassword(String username) {
-    	String query = "SELECT password_hash FROM users WHERE username = ?;";
-    	String password_hash = null;
-    	
-    	try {
+	
+	public void login(Main main, String username, String password) {
+		String hashedPassword = hashPassword(password);
+		String query = "SELECT * FROM users WHERE username = ? AND password_hash = ?;";
+		
+		User user = null;
+		
+		try {
 			Class.forName("org.postgresql.Driver");
-			Connection connection = DatabaseConnection.getConnection();
-			PreparedStatement statement = connection.prepareStatement(query);
+			Connection con = DatabaseConnection.getConnection();
+			PreparedStatement stm = con.prepareStatement(query);
+
+			stm.setString(1, username);
+			stm.setString(2, hashedPassword);
 			
-			statement.setString(1, username);
-			
-			ResultSet rs = statement.executeQuery();
+			ResultSet rs = stm.executeQuery();
 			
 			if (rs.next()) {
-				password_hash = rs.getString("password_hash");
+				String userUsername = rs.getString("username");
+				String userHashedPassword = rs.getString("password_hash");
+				double userBalance = rs.getDouble("balance");
+				
+				user = new User(userUsername, userHashedPassword, userBalance);
 			}
 			
-			connection.close();
-			statement.close();
+			con.close();
+			stm.close();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-    	
-    	return password_hash;
-    }
-	
-	public boolean validateLogin(String username, String password) {
-		return getStoredHashedPassword(username) == hashPassword(password);
+		
+		if (user != null) {
+			UserManager.getInstance().setCurrentUser(user);
+			main.showHomeView();
+		}
 	}
 	
 }
