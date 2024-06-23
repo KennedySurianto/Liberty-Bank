@@ -9,16 +9,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import main.Main;
 import main.controller.HomeController;
+import main.controller.UserManager;
 
 public class HomeView {
 	
 	public BorderPane getView(Main main) {
         BorderPane view = new BorderPane();
         HomeController homeController = new HomeController();
-        homeController.initialize();
         
         // Title
-        Label titleLabel = homeController.getWelcomeLabel();
+        Label titleLabel = new Label("Welcome, " + UserManager.getInstance().getCurrentUser().getUsername());
         titleLabel.setStyle("-fx-font-size: 24px; -fx-padding: 10px;");
         
         // Transfer form
@@ -27,6 +27,9 @@ public class HomeView {
         transferForm.setHgap(10);
         transferForm.setVgap(10);
         transferForm.setPadding(new Insets(20, 20, 20, 20));
+        
+        Label balanceLabel = new Label("Your Balance:");
+        Label balanceAmountLabel = new Label(String.valueOf(UserManager.getInstance().getCurrentUser().getBalance()));
         
         Label recipientLabel = new Label("Recipient Username:");
         TextField recipientField = new TextField();
@@ -41,15 +44,16 @@ public class HomeView {
             String recipient = recipientField.getText();
             String amount = amountField.getText();
             
-            // TODO: Add transfer logic here
-            System.out.println("Transferring " + amount + " to " + recipient);
+            homeController.transfer(recipient, Double.parseDouble(amount));
         });
         
-        transferForm.add(recipientLabel, 0, 0);
-        transferForm.add(recipientField, 1, 0);
-        transferForm.add(amountLabel, 0, 1);
-        transferForm.add(amountField, 1, 1);
-        transferForm.add(transferButton, 1, 2);
+        transferForm.add(balanceLabel, 0, 0);
+        transferForm.add(balanceAmountLabel, 1, 0);
+        transferForm.add(recipientLabel, 0, 1);
+        transferForm.add(recipientField, 1, 1);
+        transferForm.add(amountLabel, 0, 2);
+        transferForm.add(amountField, 1, 2);
+        transferForm.add(transferButton, 1, 3);
         
         view.setTop(titleLabel);
         view.setCenter(transferForm);

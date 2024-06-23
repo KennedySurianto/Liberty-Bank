@@ -88,6 +88,7 @@ public class RegisterController {
 		}
 		
 		insertUser(username, password);
-		main.showHomeView();
+		LoginController loginController = new LoginController();
+		loginController.login(main, username, passwordConfirmation);
 	}
 }

@@ -1,14 +1,24 @@
 package main.model;
 
 public class User {
+	private Integer userId;
 	private String username, password;
 	private Double balance;
 	
-	public User(String username, String password, Double balance) {
+	public User(Integer userId, String username, String password, Double balance) {
 		super();
+		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.balance = balance;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public String getUsername() {

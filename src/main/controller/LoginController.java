@@ -43,11 +43,12 @@ public class LoginController {
 			ResultSet rs = stm.executeQuery();
 			
 			if (rs.next()) {
+				Integer userId = rs.getInt("user_id");
 				String userUsername = rs.getString("username");
 				String userHashedPassword = rs.getString("password_hash");
 				double userBalance = rs.getDouble("balance");
 				
-				user = new User(userUsername, userHashedPassword, userBalance);
+				user = new User(userId, userUsername, userHashedPassword, userBalance);
 			}
 			
 			con.close();
